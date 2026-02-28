@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Karanpreet Singh — NinjaOfNeurons</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #060810;
+      --surface: #0d1117;
+      --border: #1e2530;
+      --accent: #c084fc;
+      --accent2: #38bdf8;
+      --accent3: #34d399;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --glow: rgba(192,132,252,0.15);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Mono', monospace;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom cursor */
+    #cursor {
+      width: 14px; height: 14px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: screen;
+      transition: transform 0.1s ease;
+    }
+    #cursor-ring {
+      width: 36px; height: 36px;
+      border: 1px solid rgba(192,132,252,0.5);
+      border-radius: 50%;
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.25s ease, width 0.2s, height 0.2s;
+    }
+
+    /* Grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(192,132,252,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(192,132,252,0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Noise overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.35;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    section, nav, footer { position: relative; z-index: 1; }
+
+    /* NAV */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 48px;
+      border-bottom: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      background: rgba(6,8,16,0.7);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+    }
+    .nav-logo span { color: var(--text); }
+    .nav-links { display: flex; gap: 32px; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* HERO */
+    #hero {
+      min-height: 90vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 80px 48px;
+      gap: 64px;
+    }
+
+    .hero-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.2s forwards;
+    }
+    .hero-label::before {
+      content: '';
+      display: block;
+      width: 32px; height: 1px;
+      background: var(--accent);
+    }
+
+    .hero-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.8rem, 5vw, 5rem);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.35s forwards;
+    }
+    .hero-name .highlight { color: var(--accent); }
+    .hero-name .dim { color: var(--muted); font-weight: 400; }
+
+    .hero-handle {
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: var(--accent2);
+      opacity: 0;
+      animation: fadeUp 0.6s 0.5s forwards;
+    }
+
+    .hero-desc {
+      margin-top: 28px;
+      font-size: 0.82rem;
+      line-height: 1.9;
+      color: var(--muted);
+      max-width: 480px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.65s forwards;
+    }
+
+    .hero-tags {
+      margin-top: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.8s forwards;
+    }
+    .tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 2px;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
+    .tag:hover { border-color: var(--accent); color: var(--accent); }
+    .tag.a { border-color: rgba(192,132,252,0.3); color: var(--accent); }
+    .tag.b { border-color: rgba(56,189,248,0.3); color: var(--accent2); }
+    .tag.c { border-color: rgba(52,211,153,0.3); color: var(--accent3); }
+
+    .hero-cta {
+      margin-top: 40px;
+      display: flex;
+      gap: 16px;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.95s forwards;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #060810;
+      font-weight: 700;
+    }
+    .btn-primary:hover { box-shadow: 0 0 28px rgba(192,132,252,0.5); transform: translateY(-2px); }
+    .btn-ghost {
+      border: 1px solid var(--border);
+      color: var(--muted);
+    }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
+
+    /* Hero visual */
+    .hero-visual {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      animation: fadeIn 1s 0.4s forwards;
+    }
+    .terminal {
+      background: #0d1117;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: 100%;
+      max-width: 440px;
+      overflow: hidden;
+      box-shadow: 0 0 60px rgba(192,132,252,0.1), 0 20px 60px rgba(0,0,0,0.5);
+    }
+    .terminal-bar {
+      background: #161b22;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot.r { background: #ff5f56; }
+    .dot.y { background: #ffbd2e; }
+    .dot.g { background: #27c93f; }
+    .terminal-title { font-size: 0.65rem; color: var(--muted); margin-left: 8px; letter-spacing: 0.08em; }
+    .terminal-body { padding: 20px 24px; font-size: 0.72rem; line-height: 2; }
+    .t-comment { color: #4a5568; }
+    .t-key { color: var(--accent2); }
+    .t-val { color: var(--accent3); }
+    .t-str { color: var(--accent); }
+    .t-bracket { color: var(--muted); }
+    .t-cursor { display: inline-block; width: 8px; height: 14px; background: var(--accent); animation: blink 1s infinite; vertical-align: middle; }
+
+    /* SECTION BASE */
+    section { padding: 100px 48px; }
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .section-label::after { content: ''; flex: 1; max-width: 80px; height: 1px; background: var(--border); }
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 800;
+      margin-bottom: 48px;
+      letter-spacing: -0.02em;
+    }
+
+    /* ABOUT */
+    #about {
+      border-top: 1px solid var(--border);
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+    .about-text p {
+      font-size: 0.82rem;
+      line-height: 1.9;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .about-text p strong { color: var(--text); }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .stat-card {
+      background: var(--surface);
+      padding: 28px 24px;
+      transition: background 0.2s;
+    }
+    .stat-card:hover { background: #0f1520; }
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-label { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+    /* STACK */
+    #stack {
+      border-top: 1px solid var(--border);
+      background: linear-gradient(180deg, transparent, rgba(192,132,252,0.02) 50%, transparent);
+    }
+    .stack-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .stack-item {
+      background: var(--surface);
+      padding: 28px 24px;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .stack-item::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+    }
+    .stack-item:hover::before { transform: scaleX(1); }
+    .stack-item:hover { background: #0f1520; }
+    .stack-cat {
+      font-size: 0.6rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 12px;
+    }
+    .stack-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    /* PROJECTS */
+    #projects { border-top: 1px solid var(--border); }
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .project-card {
+      background: var(--surface);
+      padding: 36px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: background 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .project-card:hover { background: #0f1520; }
+    .project-header { display: flex; justify-content: space-between; align-items: flex-start; }
+    .project-icon {
+      font-size: 1.4rem;
+      width: 44px; height: 44px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(192,132,252,0.08);
+      border: 1px solid rgba(192,132,252,0.15);
+      border-radius: 4px;
+    }
+    .project-arrow {
+      color: var(--muted);
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .project-card:hover .project-arrow { color: var(--accent); transform: translate(3px,-3px); }
+    .project-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .project-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.8; }
+    .project-lang {
+      margin-top: auto;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent3);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .project-lang::before {
+      content: '';
+      width: 8px; height: 8px;
+      background: var(--accent3);
+      border-radius: 50%;
+    }
+    .project-lang.nb { color: var(--accent2); }
+    .project-lang.nb::before { background: var(--accent2); }
+
+    /* ROADMAP */
+    #roadmap {
+      border-top: 1px solid var(--border);
+    }
+    .roadmap-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--border); }
+    .roadmap-item {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .roadmap-item:last-child { border-bottom: none; }
+    .roadmap-item:hover { background: rgba(192,132,252,0.03); }
+    .roadmap-status {
+      padding: 24px;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .status-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+    .status-dot.building { background: var(--accent); box-shadow: 0 0 10px var(--accent); animation: pulse 2s infinite; }
+    .status-dot.upcoming { background: var(--border); border: 1px solid var(--muted); }
+    .status-dot.done { background: var(--accent3); }
+    .status-text { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); text-align: center; }
+    .roadmap-content { padding: 24px 32px; }
+    .roadmap-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    .roadmap-desc { font-size: 0.75rem; color: var(--muted); line-height: 1.7; }
+
+    /* CONTACT */
+    #contact {
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    #contact .section-label { justify-content: center; }
+    #contact .section-label::after { display: none; }
+    #contact .section-label::before { content: ''; flex: 0; }
+    .contact-email {
+      display: inline-block;
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.4rem, 3vw, 2.4rem);
+      font-weight: 800;
+      color: var(--text);
+      text-decoration: none;
+      border-bottom: 2px solid var(--accent);
+      padding-bottom: 4px;
+      transition: color 0.2s;
+      margin-bottom: 48px;
+    }
+    .contact-email:hover { color: var(--accent); }
+    .contact-links { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
+    .contact-link {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      padding: 12px 24px;
+      border-radius: 2px;
+      transition: all 0.2s;
+    }
+    .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 28px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    footer p { font-size: 0.65rem; color: var(--muted); }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 6px var(--accent); }
+      50% { box-shadow: 0 0 16px var(--accent), 0 0 30px rgba(192,132,252,0.3); }
+    }
+
+    /* Scroll reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      #hero { grid-template-columns: 1fr; padding: 60px 24px; gap: 48px; }
+      .hero-visual { order: -1; }
+      section { padding: 64px 24px; }
+      .about-grid { grid-template-columns: 1fr; }
+      .stats-grid { grid-template-columns: repeat(4, 1fr); }
+      footer { flex-direction: column; gap: 12px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">Ninja<span>OfNeurons</span></div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#stack">Stack</a>
+      <a href="#projects">Projects</a>
+      <a href="#roadmap">Roadmap</a>
+      <a href="#contact">Contact</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-content">
+      <div class="hero-label">Machine Learning Engineer</div>
+      <h1 class="hero-name">
+        Karanpreet<br>
+        <span class="highlight">Singh</span>
+      </h1>
+      <p class="hero-handle">@NinjaOfNeurons · Delhi, India &amp; Ohio, USA</p>
+      <p class="hero-desc">
+        Building AI systems at the edge of production. MSc AI graduate specializing in
+        Stable Diffusion, Reinforcement Learning, and Bitcoin infrastructure.
+        Research → Production at <strong>VectorEdge</strong>.
+      </p>
+      <div class="hero-tags">
+        <span class="tag a">RAG Systems</span>
+        <span class="tag a">Agentic AI</span>
+        <span class="tag b">Stable Diffusion</span>
+        <span class="tag b">RL</span>
+        <span class="tag c">Bitcoin</span>
+        <span class="tag c">Edge Intelligence</span>
+      </div>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">View Projects →</a>
+        <a href="https://github.com/NinjaOfNeurons" target="_blank" class="btn btn-ghost">GitHub ↗</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="dot r"></div>
+          <div class="dot y"></div>
+          <div class="dot g"></div>
+          <span class="terminal-title">karanpreet.json</span>
+        </div>
+        <div class="terminal-body">
+          <span class="t-bracket">{</span><br>
+          &nbsp;&nbsp;<span class="t-key">"name"</span><span class="t-bracket">:</span> <span class="t-str">"Karanpreet Singh"</span><span class="t-bracket">,</span><br>
+          &nbsp;&nbsp;<span class="t-key">"role"</span><span class="t-bracket">:</span> <span class="t-str">"ML Engineer @ VectorEdge"</span><span class="t-bracket">,</span><br>
+          &nbsp;&nbsp;<span class="t-key">"research"</span><span class="t-bracket">:</span> <span class="t-str">"IIC"</span><span class="t-bracket">,</span><br>
+          &nbsp;&nbsp;<span class="t-key">"focus"</span><span class="t-bracket">:</span> <span class="t-bracket">[</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="t-str">"RAG"</span><span class="t-bracket">,</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="t-str">"Stable Diffusion"</span><span class="t-bracket">,</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="t-str">"Reinforcement Learning"</span><span class="t-bracket">,</span><br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="t-str">"Bitcoin Systems"</span><br>
+          &nbsp;&nbsp;<span class="t-bracket">]</span><span class="t-bracket">,</span><br>
+          &nbsp;&nbsp;<span class="t-key">"2026_vision"</span><span class="t-bracket">:</span> <span class="t-str">"AI × Security × Edge"</span><br>
+          <span class="t-bracket">}</span><br>
+          <br>
+          <span class="t-comment"># Research → Production</span><br>
+          <span class="t-val">$</span> <span class="t-key">./build</span> production_ai<span class="t-cursor"></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-label reveal">About</div>
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <h2 class="section-title">Research meets<br><span style="color:var(--accent)">Production</span></h2>
+        <p>I'm a Machine Learning Engineer working at the intersection of <strong>research and production AI systems</strong>. Currently at VectorEdge and conducting research at IIC, I focus on building robust, edge-deployed intelligence.</p>
+        <p>My work spans <strong>RAG pipelines</strong>, autonomous agentic systems, stable diffusion models, and decentralized Bitcoin infrastructure. I believe in transforming cutting-edge ideas into systems that scale.</p>
+        <p>MSc AI graduate, hackathon winner (AIOSP 2022), and <strong>Google Scholar</strong> author — I explore the full stack from algorithm to deployment.</p>
+        <div style="margin-top:28px; display:flex; gap:12px; flex-wrap:wrap;">
+          <a href="https://linkedin.com/in/karanpreet-5ingh" target="_blank" class="btn btn-ghost" style="padding:10px 20px;font-size:0.65rem;">LinkedIn ↗</a>
+          <a href="https://scholar.google.com/citations?user=gmjWDxkAAAAJ&hl=en" target="_blank" class="btn btn-ghost" style="padding:10px 20px;font-size:0.65rem;">Scholar ↗</a>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-num">11</div>
+            <div class="stat-label">Repositories</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">MSc</div>
+            <div class="stat-label">AI Graduate</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">2</div>
+            <div class="stat-label">Countries</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">1st</div>
+            <div class="stat-label">AIOSP 2022</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STACK -->
+  <section id="stack">
+    <div class="section-label reveal">Tech Stack</div>
+    <h2 class="section-title reveal">Tools &amp; Technologies</h2>
+    <div class="stack-grid reveal">
+      <div class="stack-item">
+        <div class="stack-cat">Language</div>
+        <div class="stack-name">Python</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-cat">Language</div>
+        <div class="stack-name">C / C++</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-cat">Language</div>
+        <div class="stack-name">SQL</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-cat">AI / ML</div>
+        <div class="stack-name">PyTorch</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-cat">AI / ML</div>
+        <div class="stack-name">TensorFlow</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-cat">AI / ML</div>
+        <div class="stack-name">Scikit-Learn</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-cat">AI / ML</div>
+        <div class="stack-name">OpenCV</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-cat">AI / ML</div>
+        <div class="stack-name">Pandas</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-cat">DevOps</div>
+        <div class="stack-name">Docker</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-cat">Cloud</div>
+        <div class="stack-name">GCP</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-cat">Framework</div>
+        <div class="stack-name">Flask / Django</div>
+      </div>
+      <div class="stack-item">
+        <div class="stack-cat">Platform</div>
+        <div class="stack-name">Linux · Git</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-label reveal">Projects</div>
+    <h2 class="section-title reveal">Featured Work</h2>
+    <div class="projects-grid reveal">
+      <a href="https://github.com/NinjaOfNeurons/TokenLens" target="_blank" class="project-card">
+        <div class="project-header">
+          <div class="project-icon">🔬</div>
+          <div class="project-arrow">↗</div>
+        </div>
+        <div class="project-title">TokenLens</div>
+        <div class="project-desc">Python-based web app to visualize how large language models tokenize text in the browser. Helps understand prompt construction and token boundaries.</div>
+        <div class="project-lang">Python</div>
+      </a>
+      <a href="https://github.com/NinjaOfNeurons/HomeGuardAI" target="_blank" class="project-card">
+        <div class="project-header">
+          <div class="project-icon">🏠</div>
+          <div class="project-arrow">↗</div>
+        </div>
+        <div class="project-title">HomeGuardAI</div>
+        <div class="project-desc">Innovative AI-powered home security system that monitors environments and provides timely alerts using computer vision and ML-driven detection.</div>
+        <div class="project-lang">Python</div>
+      </a>
+      <a href="https://github.com/NinjaOfNeurons/Hackathon-Win-AIOSP-2022" target="_blank" class="project-card">
+        <div class="project-header">
+          <div class="project-icon">🏆</div>
+          <div class="project-arrow">↗</div>
+        </div>
+        <div class="project-title">AIOSP 2022 Win</div>
+        <div class="project-desc">1st place AIOSP 2022 Hackathon solution using AI/ML-driven approaches to solve two real-world problem statements.</div>
+        <div class="project-lang nb">Jupyter Notebook</div>
+      </a>
+      <a href="https://github.com/NinjaOfNeurons/ML-AI-Engineer-Journey" target="_blank" class="project-card">
+        <div class="project-header">
+          <div class="project-icon">📚</div>
+          <div class="project-arrow">↗</div>
+        </div>
+        <div class="project-title">ML/AI Engineer Journey</div>
+        <div class="project-desc">Documented journey and notebooks covering the progression from ML fundamentals to advanced AI engineering concepts and production systems.</div>
+        <div class="project-lang nb">Jupyter Notebook</div>
+      </a>
+      <a href="https://github.com/NinjaOfNeurons" target="_blank" class="project-card">
+        <div class="project-header">
+          <div class="project-icon">⚡</div>
+          <div class="project-arrow">↗</div>
+        </div>
+        <div class="project-title">cli-rag-app</div>
+        <div class="project-desc">Command-line RAG application for intelligent retrieval. Bringing Retrieval-Augmented Generation to the terminal for fast, local knowledge access.</div>
+        <div class="project-lang">Python · Building</div>
+      </a>
+      <a href="https://github.com/NinjaOfNeurons" target="_blank" class="project-card">
+        <div class="project-header">
+          <div class="project-icon">🤖</div>
+          <div class="project-arrow">↗</div>
+        </div>
+        <div class="project-title">agentic-ai-lab</div>
+        <div class="project-desc">Autonomous agents and tool-using AI systems research lab. Exploring the frontier of agentic behavior and multi-step reasoning in production.</div>
+        <div class="project-lang">Python · Building</div>
+      </a>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section id="roadmap">
+    <div class="section-label reveal">2026 Vision</div>
+    <h2 class="section-title reveal">What's Next</h2>
+    <div class="roadmap-list reveal">
+      <div class="roadmap-item">
+        <div class="roadmap-status">
+          <div class="status-dot done"></div>
+          <div class="status-text">Done</div>
+        </div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">TokenLens + HomeGuardAI</div>
+          <div class="roadmap-desc">Production-ready AI tools shipped to GitHub. LLM tokenization visualizer and computer vision home security system.</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-status">
+          <div class="status-dot building"></div>
+          <div class="status-text">Building</div>
+        </div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">cli-rag-app / agentic-ai-lab</div>
+          <div class="roadmap-desc">Command-line RAG for intelligent retrieval and an autonomous agents & tool-using AI systems laboratory.</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-status">
+          <div class="status-dot upcoming"></div>
+          <div class="status-text">Upcoming</div>
+        </div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">RAG Insider Risk Intelligence</div>
+          <div class="roadmap-desc">A RAG pipeline tailored for insider risk detection — combining NLP, security data streams, and anomaly detection at scale.</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-status">
+          <div class="status-dot upcoming"></div>
+          <div class="status-text">Upcoming</div>
+        </div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">Model Health Dashboard</div>
+          <div class="roadmap-desc">AI model drift and reliability monitoring system — real-time observability for production ML systems.</div>
+        </div>
+      </div>
+      <div class="roadmap-item">
+        <div class="roadmap-status">
+          <div class="status-dot upcoming"></div>
+          <div class="status-text">Frontier</div>
+        </div>
+        <div class="roadmap-content">
+          <div class="roadmap-title">AI × Security × Bitcoin Infrastructure</div>
+          <div class="roadmap-desc">Exploring the intersection of edge intelligence, AI security systems, and decentralized Bitcoin infrastructure. Deep dive incoming.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <div class="section-label reveal">Get in touch</div>
+    <h2 class="section-title reveal" style="justify-content:center">Let's connect</h2>
+    <div class="reveal">
+      <a href="mailto:dev.karanpreet@gmail.com" class="contact-email">dev.karanpreet@gmail.com</a>
+    </div>
+    <div class="contact-links reveal">
+      <a href="https://github.com/NinjaOfNeurons" target="_blank" class="contact-link">GitHub ↗</a>
+      <a href="https://linkedin.com/in/karanpreet-5ingh" target="_blank" class="contact-link">LinkedIn ↗</a>
+      <a href="https://scholar.google.com/citations?user=gmjWDxkAAAAJ&hl=en" target="_blank" class="contact-link">Scholar ↗</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2026 Karanpreet Singh · NinjaOfNeurons</p>
+    <p>Delhi, India · Ohio, USA</p>
+  </footer>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.transform = `translate(${mx - 7}px, ${my - 7}px)`;
+    });
+    function animRing() {
+      rx += (mx - rx) * 0.15;
+      ry += (my - ry) * 0.15;
+      ring.style.transform = `translate(${rx - 18}px, ${ry - 18}px)`;
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => { ring.style.width = '56px'; ring.style.height = '56px'; ring.style.borderColor = 'rgba(192,132,252,0.8)'; });
+      el.addEventListener('mouseleave', () => { ring.style.width = '36px'; ring.style.height = '36px'; ring.style.borderColor = 'rgba(192,132,252,0.5)'; });
+    });
+
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('visible'), 80);
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => obs.observe(el));
+  </script>
+</body>
+</html>
