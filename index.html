@@ -542,6 +542,85 @@
     }
     .reveal.visible { opacity: 1; transform: none; }
 
+    /* CERTIFICATIONS */
+    #certs { border-top: 1px solid var(--border); }
+    .certs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .cert-card {
+      background: var(--surface);
+      padding: 28px 28px;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .cert-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s;
+    }
+    .cert-card:hover::before { transform: scaleX(1); }
+    .cert-card:hover { background: #0f1520; }
+    .cert-badge-wrap {
+      flex-shrink: 0;
+      width: 56px; height: 56px;
+      background: rgba(192,132,252,0.06);
+      border: 1px solid rgba(192,132,252,0.15);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+    }
+    .cert-badge-img {
+      width: 48px; height: 48px;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+    .cert-info { flex: 1; min-width: 0; }
+    .cert-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      color: var(--text);
+      line-height: 1.4;
+      margin-bottom: 6px;
+    }
+    .cert-issuer {
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 4px;
+    }
+    .cert-date {
+      font-size: 0.62rem;
+      color: var(--muted);
+    }
+    .cert-arrow {
+      font-size: 0.75rem;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: all 0.2s;
+      align-self: center;
+    }
+    .cert-card:hover .cert-arrow { color: var(--accent); transform: translate(3px, -3px); }
+    .cert-featured {
+      border-left: 2px solid var(--accent);
+    }
+
     /* RESPONSIVE */
     @media (max-width: 768px) {
       nav { padding: 16px 24px; }
@@ -568,6 +647,7 @@
       <a href="#stack">Stack</a>
       <a href="#projects">Projects</a>
       <a href="#roadmap">Roadmap</a>
+      <a href="#certs">Certs</a>
       <a href="#contact">Contact</a>
     </div>
   </nav>
@@ -842,12 +922,110 @@
     </div>
   </section>
 
+  <!-- CERTIFICATIONS -->
+  <section id="certs">
+    <div class="section-label reveal">Verified Credentials</div>
+    <h2 class="section-title reveal">Certifications</h2>
+    <div class="certs-grid reveal">
+
+      <!-- Featured: Credly badges -->
+      <a href="https://www.credly.com/badges/487b8d6c-4a04-4049-be2f-515f4e570f15" target="_blank" class="cert-card cert-featured">
+        <div class="cert-badge-wrap">
+          <img src="assets/badges/rag-cert.png" class="cert-badge-img" onerror="this.style.display='none';this.parentElement.innerHTML='🏅'" alt="RAG Badge" />
+        </div>
+        <div class="cert-info">
+          <div class="cert-issuer">Coursera · Credly Verified</div>
+          <div class="cert-title">Advanced RAG with Vector Databases and Retrievers</div>
+          <div class="cert-date">Issued Mar 2026</div>
+        </div>
+        <div class="cert-arrow">↗</div>
+      </a>
+
+      <a href="https://www.credly.com/badges/ca8d463b-5766-4baf-bf06-1a0d8bf58a12/public_url" target="_blank" class="cert-card cert-featured">
+        <div class="cert-badge-wrap">
+          <img src="assets/badges/ai-agents-cert.png" class="cert-badge-img" onerror="this.style.display='none';this.parentElement.innerHTML='🤖'" alt="AI Agents Badge" />
+        </div>
+        <div class="cert-info">
+          <div class="cert-issuer">Coursera · Credly Verified</div>
+          <div class="cert-title">Fundamentals of Building AI Agents</div>
+          <div class="cert-date">Issued Mar 2026</div>
+        </div>
+        <div class="cert-arrow">↗</div>
+      </a>
+
+      <!-- IBM certs -->
+      <div class="cert-card">
+        <div class="cert-badge-wrap">🗄️</div>
+        <div class="cert-info">
+          <div class="cert-issuer">IBM</div>
+          <div class="cert-title">Advanced RAG with Vector Databases and Retrievers</div>
+          <div class="cert-date">Issued Mar 2026 · ID: FFCA3NDCISYK</div>
+        </div>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-badge-wrap">🔍</div>
+        <div class="cert-info">
+          <div class="cert-issuer">IBM</div>
+          <div class="cert-title">Vector Databases for RAG: An Introduction</div>
+          <div class="cert-date">Issued Mar 2026 · ID: 75P78P6JEA6K</div>
+        </div>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-badge-wrap">⚙️</div>
+        <div class="cert-info">
+          <div class="cert-issuer">KodeKloud</div>
+          <div class="cert-title">Kubernetes Crash Course</div>
+          <div class="cert-date">Issued Mar 2026 · ID: e6f1807e-4647</div>
+        </div>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-badge-wrap">🧠</div>
+        <div class="cert-info">
+          <div class="cert-issuer">IBM</div>
+          <div class="cert-title">Build RAG Applications: Get Started</div>
+          <div class="cert-date">Issued Feb 2026 · ID: KNU8LQ8HR7U6</div>
+        </div>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-badge-wrap">⚡</div>
+        <div class="cert-info">
+          <div class="cert-issuer">IBM</div>
+          <div class="cert-title">Develop Generative AI Applications</div>
+          <div class="cert-date">Issued Feb 2026 · ID: TWR0ZSRP2VME</div>
+        </div>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-badge-wrap">🔬</div>
+        <div class="cert-info">
+          <div class="cert-issuer">Coursera · DeepLearning.AI</div>
+          <div class="cert-title">Neural Networks and Deep Learning</div>
+          <div class="cert-date">Issued Feb 2023 · ID: TUL8ETWBRSQ2</div>
+        </div>
+      </div>
+
+      <div class="cert-card">
+        <div class="cert-badge-wrap">📊</div>
+        <div class="cert-info">
+          <div class="cert-issuer">Jovian</div>
+          <div class="cert-title">Data Analysis with Python: Zero to Pandas</div>
+          <div class="cert-date">Issued Mar 2023 · ID: MFQTQMZVGI</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
   <!-- CONTACT -->
   <section id="contact">
     <div class="section-label reveal">Get in touch</div>
     <h2 class="section-title reveal" style="justify-content:center">Let's connect</h2>
     <div class="reveal">
-      <a href="mailto:dev.karanpreet@gmail.com" class="contact-email">dev.karanpreet@gmail.com</a>
+      <a href="/cdn-cgi/l/email-protection#402425366e2b2132212e303225253400272d21292c6e232f2d" class="contact-email"><span class="__cf_email__" data-cfemail="2c48495a02474d5e4d425c5e4949586c4b414d4540024f4341">[email&#160;protected]</span></a>
     </div>
     <div class="contact-links reveal">
       <a href="https://github.com/NinjaOfNeurons" target="_blank" class="contact-link">GitHub ↗</a>
@@ -861,7 +1039,7 @@
     <p>Delhi, India · Ohio, USA</p>
   </footer>
 
-  <script>
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     // Custom cursor
     const cursor = document.getElementById('cursor');
     const ring = document.getElementById('cursor-ring');
@@ -885,7 +1063,7 @@
     // Scroll reveal
     const reveals = document.querySelectorAll('.reveal');
     const obs = new IntersectionObserver((entries) => {
-      entries.forEach((e, i) => {
+      entries.forEach((e) => {
         if (e.isIntersecting) {
           setTimeout(() => e.target.classList.add('visible'), 80);
           obs.unobserve(e.target);
