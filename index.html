@@ -542,7 +542,58 @@
     }
     .reveal.visible { opacity: 1; transform: none; }
 
-    /* CERTIFICATIONS */
+    /* STACK ROWS */
+    .stack-row {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.2s;
+    }
+    .stack-row:last-child { border-bottom: none; }
+    .stack-row:hover { background: #0f1520; }
+    .stack-row-label {
+      padding: 24px 28px;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      border-right: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+    }
+    .stack-row-items {
+      padding: 20px 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+    .stack-pill {
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      padding: 6px 14px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      color: var(--text);
+      background: rgba(255,255,255,0.02);
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .stack-pill:hover { border-color: var(--accent); color: var(--accent); }
+    .stack-pill.rag {
+      border-color: rgba(192,132,252,0.25);
+      color: var(--accent);
+      background: rgba(192,132,252,0.04);
+    }
+    .stack-pill.rag:hover { background: rgba(192,132,252,0.1); border-color: var(--accent); }
+
+    @media (max-width: 768px) {
+      .stack-row { grid-template-columns: 1fr; }
+      .stack-row-label { border-right: none; border-bottom: 1px solid var(--border); padding: 16px 20px; }
+      .stack-row-items { padding: 16px 20px; }
+    }
     #certs { border-top: 1px solid var(--border); }
     .certs-grid {
       display: grid;
@@ -750,55 +801,78 @@
   <section id="stack">
     <div class="section-label reveal">Tech Stack</div>
     <h2 class="section-title reveal">Tools &amp; Technologies</h2>
-    <div class="stack-grid reveal">
-      <div class="stack-item">
-        <div class="stack-cat">Language</div>
-        <div class="stack-name">Python</div>
+
+    <div style="display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border);" class="reveal">
+
+      <!-- Languages -->
+      <div class="stack-row">
+        <div class="stack-row-label">Languages</div>
+        <div class="stack-row-items">
+          <div class="stack-pill">Python</div>
+          <div class="stack-pill">C++</div>
+          <div class="stack-pill">C</div>
+          <div class="stack-pill">SQL</div>
+        </div>
       </div>
-      <div class="stack-item">
-        <div class="stack-cat">Language</div>
-        <div class="stack-name">C / C++</div>
+
+      <!-- AI / ML -->
+      <div class="stack-row">
+        <div class="stack-row-label">AI / ML</div>
+        <div class="stack-row-items">
+          <div class="stack-pill">PyTorch</div>
+          <div class="stack-pill">TensorFlow</div>
+          <div class="stack-pill">Scikit-Learn</div>
+          <div class="stack-pill">OpenCV</div>
+          <div class="stack-pill">Pandas</div>
+        </div>
       </div>
-      <div class="stack-item">
-        <div class="stack-cat">Language</div>
-        <div class="stack-name">SQL</div>
+
+      <!-- DevOps / Cloud -->
+      <div class="stack-row">
+        <div class="stack-row-label">DevOps / Cloud</div>
+        <div class="stack-row-items">
+          <div class="stack-pill">Docker</div>
+          <div class="stack-pill">Kubernetes</div>
+          <div class="stack-pill">AWS</div>
+          <div class="stack-pill">GCP</div>
+          <div class="stack-pill">Jenkins</div>
+          <div class="stack-pill">GitHub Actions</div>
+          <div class="stack-pill">Prometheus</div>
+          <div class="stack-pill">Grafana</div>
+          <div class="stack-pill">Linux</div>
+          <div class="stack-pill">Git</div>
+        </div>
       </div>
-      <div class="stack-item">
-        <div class="stack-cat">AI / ML</div>
-        <div class="stack-name">PyTorch</div>
+
+      <!-- Frameworks & APIs -->
+      <div class="stack-row">
+        <div class="stack-row-label">Frameworks &amp; APIs</div>
+        <div class="stack-row-items">
+          <div class="stack-pill">Flask</div>
+          <div class="stack-pill">Django</div>
+          <div class="stack-pill">FastAPI</div>
+          <div class="stack-pill">Gradio</div>
+          <div class="stack-pill">Android</div>
+          <div class="stack-pill">Arduino</div>
+        </div>
       </div>
-      <div class="stack-item">
-        <div class="stack-cat">AI / ML</div>
-        <div class="stack-name">TensorFlow</div>
+
+      <!-- RAG & Vector Intelligence -->
+      <div class="stack-row">
+        <div class="stack-row-label">RAG &amp; Vector Intelligence</div>
+        <div class="stack-row-items">
+          <div class="stack-pill rag">LangChain</div>
+          <div class="stack-pill rag">LangGraph</div>
+          <div class="stack-pill rag">LlamaIndex</div>
+          <div class="stack-pill rag">ChromaDB</div>
+          <div class="stack-pill rag">FAISS</div>
+          <div class="stack-pill rag">RAG</div>
+          <div class="stack-pill rag">Semantic Search</div>
+          <div class="stack-pill rag">Vector DB</div>
+          <div class="stack-pill rag">HNSW</div>
+        </div>
       </div>
-      <div class="stack-item">
-        <div class="stack-cat">AI / ML</div>
-        <div class="stack-name">Scikit-Learn</div>
-      </div>
-      <div class="stack-item">
-        <div class="stack-cat">AI / ML</div>
-        <div class="stack-name">OpenCV</div>
-      </div>
-      <div class="stack-item">
-        <div class="stack-cat">AI / ML</div>
-        <div class="stack-name">Pandas</div>
-      </div>
-      <div class="stack-item">
-        <div class="stack-cat">DevOps</div>
-        <div class="stack-name">Docker</div>
-      </div>
-      <div class="stack-item">
-        <div class="stack-cat">Cloud</div>
-        <div class="stack-name">GCP</div>
-      </div>
-      <div class="stack-item">
-        <div class="stack-cat">Framework</div>
-        <div class="stack-name">Flask / Django</div>
-      </div>
-      <div class="stack-item">
-        <div class="stack-cat">Platform</div>
-        <div class="stack-name">Linux · Git</div>
-      </div>
+
     </div>
   </section>
 
